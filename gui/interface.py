@@ -10,14 +10,14 @@ class MainWindow:
         self.window_size = window_size
         self.manager = pygame_gui.UIManager(window_size, theme_path='theme.json')
         
-        # Set up the main UI components
-        self._setup_layout()
-        
         # Initialize data structures
         self.processes = []
         self.selected_algorithm = 'FCFS'
         self.simulation_results = None
-        self.time_quantum = 2  # Default time quantum for Round Robin
+        self.time_quantum = 2  # Define time_quantum before setup_layout
+        
+        # Set up the main UI components
+        self._setup_layout()
     
     def _setup_layout(self):
         """Set up the layout for the simulator interface"""
@@ -69,27 +69,27 @@ class MainWindow:
         )
         
         self.arrival_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((170, 10), (80, 20)),
+            relative_rect=pygame.Rect((170, 10), (100, 20)),  # Increased width to fix warning
             text="Arrival Time:",
             manager=self.manager,
             container=self.process_panel
         )
         
         self.arrival_input = pygame_gui.elements.UITextEntryLine(
-            relative_rect=pygame.Rect((250, 10), (70, 20)),
+            relative_rect=pygame.Rect((270, 10), (70, 20)),  # Adjusted position
             manager=self.manager,
             container=self.process_panel
         )
         
         self.burst_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((330, 10), (80, 20)),
+            relative_rect=pygame.Rect((350, 10), (80, 20)),  # Adjusted position
             text="Burst Time:",
             manager=self.manager,
             container=self.process_panel
         )
         
         self.burst_input = pygame_gui.elements.UITextEntryLine(
-            relative_rect=pygame.Rect((410, 10), (70, 20)),
+            relative_rect=pygame.Rect((430, 10), (70, 20)),  # Adjusted position
             manager=self.manager,
             container=self.process_panel
         )
@@ -122,7 +122,7 @@ class MainWindow:
         
         # Quantum input for Round Robin
         self.quantum_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((330, 40), (80, 20)),
+            relative_rect=pygame.Rect((330, 40), (120, 20)),  # Increased width to fix warning
             text="Time Quantum:",
             manager=self.manager,
             container=self.process_panel,
@@ -130,7 +130,7 @@ class MainWindow:
         )
         
         self.quantum_input = pygame_gui.elements.UITextEntryLine(
-            relative_rect=pygame.Rect((410, 40), (70, 20)),
+            relative_rect=pygame.Rect((450, 40), (70, 20)),  # Adjusted position
             manager=self.manager,
             container=self.process_panel,
             visible=False
@@ -139,7 +139,7 @@ class MainWindow:
         
         # Add Process Button
         self.add_button = CustomButton(
-            relative_rect=pygame.Rect((490, 10), (150, 50)),
+            relative_rect=pygame.Rect((530, 10), (110, 50)),  # Adjusted position and size
             text="Add Process",
             manager=self.manager,
             container=self.process_panel,
@@ -330,12 +330,9 @@ class MainWindow:
         
         # Handle button clicks
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            if event.ui_element == self.add_button:
-                self.add_process()
-            elif event.ui_element == self.start_button:
-                self.start_simulation()
-            elif event.ui_element == self.clear_button:
-                self.clear_data()
+            self.add_button.handle_event(event)
+            self.start_button.handle_event(event)
+            self.clear_button.handle_event(event)
         
         # Handle process table events
         self.process_table.handle_event(event)

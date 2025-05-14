@@ -181,5 +181,10 @@ class CustomButton(pygame_gui.elements.UIButton):
         """Handle button click event"""
         if event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_element == self:
             if self.action_callback:
-                return self.action_callback()
+                try:
+                    # First try to call with event parameter
+                    return self.action_callback(event)
+                except TypeError:
+                    # Fall back to calling without parameters if the callback doesn't accept them
+                    return self.action_callback()
         return False

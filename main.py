@@ -4,7 +4,7 @@ import os
 import sys
 
 # Add the project root to the path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from gui.interface import MainWindow
 
@@ -21,7 +21,7 @@ def main():
     # Create theme file if it doesn't exist
     if not os.path.exists('theme.json'):
         with open('theme.json', 'w') as f:
-            f.write('{}')  # Empty theme file
+            f.write('{"defaults": {"colours": {"normal_bg": "#393E46", "hovered_bg": "#00ADB5", "disabled_bg": "#303841", "selected_bg": "#00ADB5", "active_bg": "#00ADB5", "dark_bg": "#222831", "normal_text": "#EEEEEE", "hovered_text": "#EEEEEE", "selected_text": "#EEEEEE", "disabled_text": "#C6C6C6", "active_text": "#EEEEEE", "normal_border": "#00ADB5", "hovered_border": "#00FFF5", "disabled_border": "#303841", "selected_border": "#00FFF5", "active_border": "#00FFF5"}}}')
     
     # Create main window
     main_window = MainWindow(window_size)
