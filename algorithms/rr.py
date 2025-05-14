@@ -1,51 +1,85 @@
 from .base import SchedulingAlgorithm
 
-class SJN(SchedulingAlgorithm):
-    """Shortest Job Next scheduling algorithm"""
+class RoundRobin(SchedulingAlgorithm):
+    """Round Robin scheduling algorithm"""
+    
+    def __init__(self, processes, time_quantum=2):
+        """
+        Initialize with process list and time quantum
+        
+        processes: list of dictionaries with keys:
+            - 'name': Process name/ID
+            - 'arrival': Arrival time
+            - 'burst': Burst/execution time
+        time_quantum: Time slice for each process execution
+        """
+        super().__init__(processes)
+        self.time_quantum = time_quantum
     
     def run(self):
         """
-        Run SJN scheduling (non-preemptive)
+        Run Round Robin scheduling
         """
         processes = sorted(self.processes, key=lambda x: x['arrival'])
-        current_time = 0
-        gantt_chart = []
-        metrics = {
-            'waiting_times': [0] * len(processes),
-            'turnaround_times': [0] * len(processes)
-        }
-        
-        remaining_burst = [p['burst'] for p in processes]
-        completed = 0
         n = len(processes)
         
-        while completed != n:
-            # Find available processes with remaining burst
-            available = []
-            for i, p in enumerate(processes):
-                if p['arrival'] <= current_time and remaining_burst[i] > 0:
-                    available.append((i, remaining_burst[i]))
-            
-            if not available:
-                current_time += 1
-                continue
-            
-            # Select process with shortest remaining burst
-            proc_idx, burst = min(available, key=lambda x: x[1])
-            
-            # Execute process to completion
-            gantt_chart.append((processes[proc_idx]['name'], current_time, current_time + burst))
-            
-            # Update metrics
-            metrics['turnaround_times'][proc_idx] = current_time + burst - processes[proc_idx]['arrival']
-            metrics['waiting_times'][proc_idx] = metrics['turnaround_times'][proc_idx] - processes[proc_idx]['burst']
-            
-            current_time += burst
-            remaining_burst[proc_idx] = 0
-            completed += 1
+        # Create working copies
+        remaining_burst = [p['burst'] for p in processes]
+        completion_time = [0] * n
+        waiting_times = [0] * n
+        turnaround_times = [0] * n
         
-        avg_waiting = sum(metrics['waiting_times']) / n if n > 0 else 0
-        avg_turnaround = sum(metrics['turnaround_times']) / n if n > 0 else 0
+        current_time = 0
+        gantt_chart = []
+        
+        # Continue until all processes are done
+        while True:
+            done = True
+            
+            # Go through all processes
+            for i in range(n):
+                # If process has remaining burst time and has arrived
+                if remaining_burst[i] > 0 and processes[i]['arrival'] <= current_time:
+                    done = False
+                    
+                    # Execute for time quantum or remaining time, whichever is smaller
+                    execution_time = min(self.time_quantum, remaining_burst[i])
+                    
+                    # Add to Gantt chart
+                    gantt_chart.append((processes[i]['name'], current_time, current_time + execution_time))
+                    
+                    # Update remaining time
+                    remaining_burst[i] -= execution_time
+                    current_time += execution_time
+                    
+                    # If process is complete, update completion time
+                    if remaining_burst[i] == 0:
+                        completion_time[i] = current_time
+                        turnaround_times[i] = completion_time[i] - processes[i]['arrival']
+                        waiting_times[i] = turnaround_times[i] - processes[i]['burst']
+            
+            # If all processes are done, break
+            if done:
+                break
+                
+            # If no process is available at current time, advance time
+            no_ready_process = True
+            for i in range(n):
+                if remaining_burst[i] > 0 and processes[i]['arrival'] <= current_time:
+                    no_ready_process = False
+                    break
+            
+            if no_ready_process:
+                next_arrival = float('inf')
+                for i in range(n):
+                    if remaining_burst[i] > 0 and processes[i]['arrival'] > current_time:
+                        next_arrival = min(next_arrival, processes[i]['arrival'])
+                
+                if next_arrival != float('inf'):
+                    current_time = next_arrival
+        
+        avg_waiting = sum(waiting_times) / n if n > 0 else 0
+        avg_turnaround = sum(turnaround_times) / n if n > 0 else 0
         cpu_utilization = (sum(p['burst'] for p in processes) / current_time) * 100 if current_time > 0 else 0
         
         return {
@@ -55,7 +89,7 @@ class SJN(SchedulingAlgorithm):
                 'avg_waiting': avg_waiting,
                 'avg_turnaround': avg_turnaround,
                 'cpu_utilization': cpu_utilization,
-                'waiting_times': metrics['waiting_times'],
-                'turnaround_times': metrics['turnaround_times']
+                'waiting_times': waiting_times,
+                'turnaround_times': turnaround_times
             }
         }
