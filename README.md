@@ -1,85 +1,126 @@
-## 🖥️ CPU Scheduling Visualizer
+# CPU Scheduling Visualizer
 
-An interactive Python-based GUI application to simulate and visualize various CPU scheduling algorithms. This tool is designed for educational purposes and supports:
+A modern, interactive application to visualize and compare various CPU scheduling algorithms in operating systems.
 
-* **First Come First Served (FCFS)**
-* **Shortest Job Next (SJN)**
-* **Round Robin (RR)**
-* **Rate Monotonic (RM)**
-* **Earliest Deadline First (EDF)**
 
----
+## Overview
 
-### 📦 Requirements
+This application provides a graphical interface to visualize how different CPU scheduling algorithms work, allowing users to understand their operation and compare their performance metrics. The visualizer supports the following scheduling algorithms:
 
-Ensure you have Python and Pygame installed:
+- **First Come First Served (FCFS)**
+- **Shortest Job Next (SJN)**
+- **Round Robin (RR)**
+- **Rate Monotonic (RM)**
+- **Earliest Deadline First (EDF)**
+
+## Features
+
+- **Interactive Visualization**: See how processes are scheduled in real-time with a Gantt chart
+- **Multithreaded Execution**: Algorithms run in background threads, keeping the UI responsive
+- **Algorithm Comparison**: Compare multiple scheduling algorithms side by side
+- **Detailed Metrics**: View CPU utilization, average waiting time, and average turnaround time
+- **Custom Task Creation**: Define your own process sets with custom parameters
+- **Real-time Feedback**: Status messages and progress indicators for long operations
+
+## Requirements
+
+- Python 3.7+
+- Pygame 2.0.0+
+
+## Installation
+
+1. Clone this repository or download the source code
+2. Make sure you have Python installed on your system
+3. Install the required packages:
 
 ```bash
 pip install pygame
 ```
 
----
+## Running the Application
 
-### 🚀 How to Run
-
-1. Clone or download this repository.
-2. Navigate to the folder containing the `SchedulingVisualizer.py` file.
-3. Run the application:
+To run the application, simply execute the main Python file:
 
 ```bash
-python SchedulingVisualizer.py
+python ImprovedCPUScheduler.py
 ```
 
-The GUI window will open and allow you to:
+## Usage Guide
 
-* Choose a scheduling algorithm from a dropdown.
-* Enter arrival times, burst times, and (if required) deadlines, periods, or time quantum.
-* Click **Simulate** to visualize the Gantt chart, metrics, and task details.
+### Task Configuration
 
----
+1. **Task Names**: Enter comma-separated task names (e.g., P1, P2, P3)
+2. **Arrival Times**: Enter comma-separated arrival times for each task
+3. **Burst Times**: Enter comma-separated burst/execution times for each task
+4. **Deadlines** (optional): Enter deadlines for tasks if using EDF algorithm
+5. **Periods** (optional): Enter periods for tasks if using Rate Monotonic algorithm
+6. **Time Quantum**: Enter the time quantum value for Round Robin algorithm
 
-### ✏️ Input Format
+### Running Algorithms
 
-* **Arrival Time** and **Burst Time** must be comma or space-separated integers.
-  Example: `0, 1, 2, 3`
+1. Select the desired scheduling algorithm from the dropdown menu
+2. Click "Run Algorithm" to visualize the selected algorithm
+3. View the Gantt chart and results table to understand the scheduling
+4. Click "Compare All" to run all algorithms and see comparative metrics
+5. Click "Clear All" to reset the application
 
-* **Time Quantum** (for RR): a single integer.
-  Example: `2`
+### Reading the Results
 
-* **Deadline** (for EDF): comma-separated values.
-  Example: `10, 8, 12`
+- **Gantt Chart**: Shows the timeline of task execution
+- **Results Table**: Shows detailed metrics for each task:
+  - Arrival Time: When the task enters the ready queue
+  - Burst Time: Total execution time required
+  - Finish Time: When the task completes execution
+  - Turnaround Time: Time from arrival to completion
+  - Waiting Time: Time spent waiting in the ready queue
 
-* **Period** (for RM): comma-separated values.
-  Example: `20, 10, 30`
+- **Comparison Charts**: When comparing algorithms, view:
+  - Average Waiting Time
+  - Average Turnaround Time
+  - CPU Utilization (%)
 
----
+## Algorithm Descriptions
 
-### 📊 Output Features
+### First Come First Served (FCFS)
+- Processes are executed in the order they arrive
+- Non-preemptive scheduling algorithm
+- Simple but can cause long waiting times for short processes
 
-* Dynamic **Gantt Chart**
-* CPU **Utilization**
-* Average **Turnaround** and **Waiting Time**
-* Scrollable **Task Table**
+### Shortest Job Next (SJN)
+- Processes with shortest burst time are executed first
+- Non-preemptive scheduling algorithm
+- Optimizes average waiting time but may cause starvation
 
----
+### Round Robin (RR)
+- Each process gets a small unit of CPU time (time quantum)
+- After time quantum expires, the process is preempted and added to the end of the ready queue
+- Provides good response time for interactive systems
 
-### 🧠 Educational Use
+### Rate Monotonic (RM)
+- Assigns priorities based on process periods (shorter period = higher priority)
+- Preemptive priority-based scheduling algorithm
+- Commonly used in real-time systems
 
-This visualizer is a great learning tool for students and educators in operating systems or real-time systems courses.
+### Earliest Deadline First (EDF)
+- Assigns priorities based on absolute deadlines
+- Preemptive priority-based scheduling algorithm
+- Optimal for meeting deadlines if system is not overloaded
 
----
+## Troubleshooting
 
-### 🛠️ Built With
+- **No visualization appears**: Ensure you've entered valid task data and selected an algorithm
+- **Application feels slow**: Reduce the number of tasks or simplify the task set
+- **Invalid inputs**: Ensure all numeric inputs are valid numbers separated by commas
 
-* Python 🐍
-* Pygame 🎮
+## Contributing
 
----
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-### 📜 License
+## License
 
-This project is open-source and available under the MIT License.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
----
+## Acknowledgments
 
-Let me know if you'd like to generate this as a file or customize it for packaging (e.g., as a `.exe`).
+- Built with Pygame
+
