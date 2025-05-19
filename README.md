@@ -42,7 +42,7 @@ pip install pygame
 To run the application, simply execute the main Python file:
 
 ```bash
-python ImprovedCPUScheduler.py
+python SchedulingVisualizer.py
 ```
 
 ## Usage Guide
